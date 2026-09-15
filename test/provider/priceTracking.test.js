@@ -35,6 +35,7 @@ const EXPECTED_DETAIL_PRICE = {
   kleinanzeigen: 195000,
   schwarzesbrett: 560,
   sparkasse: 410000,
+  vonovia: 870,
   wgGesucht: 590,
 };
 
@@ -63,6 +64,13 @@ const CUSTOM_LIST_PRICES = {
     return (body.results ?? [])
       .filter((item) => item.vermarktungsart_miete === '1')
       .map((item) => providerModule('deutscheWohnen').config.normalize({ id: item.wrk_id, price: item.preis })?.price)
+      .filter((price) => price != null);
+  },
+  vonovia: () => {
+    const body = JSON.parse(fs.readFileSync(path.join(FIXTURES, 'vonovia_list.json'), 'utf8'));
+    return (body.results ?? [])
+      .filter((item) => item.vermarktungsart_miete === '1')
+      .map((item) => providerModule('vonovia').config.normalize({ id: item.wrk_id, price: item.preis })?.price)
       .filter((price) => price != null);
   },
   immowelt: () => {

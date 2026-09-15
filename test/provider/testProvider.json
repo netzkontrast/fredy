@@ -69,6 +69,10 @@
     "url": "https://www.deutsche-wohnen.com/mieten/mietangebote?rentType=miete&city=Berlin&immoType=wohnung",
     "enabled": true
   },
+  "vonovia": {
+    "url": "https://www.vonovia.de/zuhause-finden/immobilien?rentType=miete&city=K%C3%B6ln&perimeter=5&immoType=wohnung",
+    "enabled": true
+  },
   "willhaben": {
     "url": "https://www.willhaben.at/iad/immobilien/mietwohnungen/wien",
     "enabled": true
