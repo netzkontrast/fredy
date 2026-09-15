@@ -27,6 +27,11 @@ const RECORDED_SEARCHES = [
     { min: 500, max: 1000 },
   ],
   [
+    'vonovia',
+    'https://www.vonovia.de/zuhause-finden/immobilien?rentType=miete&city=K%C3%B6ln&perimeter=5&immoType=wohnung&priceMin=500&priceMax=800',
+    { min: 500, max: 800 },
+  ],
+  [
     'engelVoelkers',
     'https://www.engelvoelkers.com/de/de/propertysearch?businessArea[]=residential&currency=EUR&page=1&placeName=Berlin%2C%20Deutschland&price.max=1000&price.min=500&propertyMarketingType[]=sale',
     { min: 500, max: 1000 },

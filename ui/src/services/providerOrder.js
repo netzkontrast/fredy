@@ -49,6 +49,7 @@ export const PROVIDER_SIZE_ORDER = [
   'mcMakler',
   'sparkasse',
   'neubauKompass',
+  'vonovia',
   'deutscheWohnen',
   'einsAImmobilien',
   'immoswp',

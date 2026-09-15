@@ -173,6 +173,25 @@ const IDEALISTA_SEARCH = /app\.idealista\.(it|com|pt)\/api\/3\.5\/(it|es|pt)\/se
  * serves pre-downloaded JSON fixtures. Throws for any other URL to prevent
  * accidental live network traffic in offline mode.
  */
+/**
+ * One page of a recorded Vonovia-platform list (Vonovia, Deutsche Wohnen), shaped like the endpoint.
+ *
+ * The endpoint caps a page at 50 and the providers walk the rest with `offset`, so serving the whole
+ * fixture to every request would hand the same listings back on each page and never let the walk
+ * end. Slicing is what makes the fixture behave like the endpoint.
+ *
+ * @param {{results?: any[]}} listData the recorded list payload
+ * @param {string} urlStr the url the provider requested
+ * @returns {{ok: boolean, status: number, json: () => Promise<any>}} a fetch-like response
+ */
+function vonoviaPlatformPage(listData, urlStr) {
+  const params = new URL(urlStr).searchParams;
+  const offset = Number.parseInt(params.get('offset') ?? '0', 10) || 0;
+  const limit = Number.parseInt(params.get('limit') ?? '', 10) || (listData.results ?? []).length;
+  const page = { ...listData, results: (listData.results ?? []).slice(offset, offset + limit) };
+  return { ok: true, status: 200, json: () => Promise.resolve(page) };
+}
+
 export function buildFetchMock() {
   let idealistaCatalogue = null;
   let idealistaListData = null;
@@ -181,6 +200,7 @@ export function buildFetchMock() {
   let listData = null;
   let detailData = null;
   let deutscheWohnenListData = null;
+  let vonoviaListData = null;
   let willhabenHtml = null;
   let flatfoxPins = null;
   let flatfoxListings = null;
@@ -322,17 +342,16 @@ export function buildFetchMock() {
         const raw = await tryReadFile(path.join(FIXTURES_DIR, 'deutscheWohnen_list.json'));
         deutscheWohnenListData = raw ? JSON.parse(raw) : { results: [] };
       }
-      // The endpoint caps a page at 50 and the provider walks the rest with `offset`, so serving
-      // the whole fixture to every request would hand the same listings back on each page and
-      // never let the walk end. Slicing is what makes the fixture behave like the endpoint.
-      const params = new URL(urlStr).searchParams;
-      const offset = Number.parseInt(params.get('offset') ?? '0', 10) || 0;
-      const limit = Number.parseInt(params.get('limit') ?? '', 10) || (deutscheWohnenListData.results ?? []).length;
-      const page = {
-        ...deutscheWohnenListData,
-        results: (deutscheWohnenListData.results ?? []).slice(offset, offset + limit),
-      };
-      return { ok: true, status: 200, json: () => Promise.resolve(page) };
+      return vonoviaPlatformPage(deutscheWohnenListData, urlStr);
+    }
+
+    // Vonovia runs on the same platform as Deutsche Wohnen, so its list is served the same way.
+    if (urlStr.includes('vonovia.de/api/real-estate/list')) {
+      if (!vonoviaListData) {
+        const raw = await tryReadFile(path.join(FIXTURES_DIR, 'vonovia_list.json'));
+        vonoviaListData = raw ? JSON.parse(raw) : { results: [] };
+      }
+      return vonoviaPlatformPage(vonoviaListData, urlStr);
     }
 
     throw new Error(`Network request blocked in offline mode: ${urlStr}`);

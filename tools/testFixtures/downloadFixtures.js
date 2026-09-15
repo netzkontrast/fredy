@@ -16,13 +16,26 @@ const FIXTURES_DIR = path.join(ROOT, 'test', 'testFixtures');
 const TEST_PROVIDER_PATH = path.join(ROOT, 'test', 'provider', 'testProvider.json');
 
 /**
+ * Detail page of a Vonovia-platform listing, by provider. Both portals share the list endpoint's row
+ * shape and differ only in where a slug is published.
+ */
+const VONOVIA_PLATFORM_DETAIL_URL = {
+  deutscheWohnen: (slug) => `https://www.deutsche-wohnen.com/mieten/mietangebote/${slug}`,
+  vonovia: (slug) => `https://www.vonovia.de/zuhause-finden/immobilien/${slug}`,
+};
+
+/**
  * The list endpoint caps a page at 50 and the provider walks the rest with `offset`, so a fixture
  * of the first page alone would be a truncated search - `paging.info.count` promising listings the
  * offline suite can never reach. The pages are merged into one payload instead, keeping the first
  * response's `paging` so the offline fetch mock can serve them back sliced, page by page.
+ *
+ * @param {'deutscheWohnen'|'vonovia'} name The provider whose fixtures are recorded.
+ * @param {string} apiUrl The resolved list endpoint.
+ * @param {string} refererUrl The search page the endpoint is queried from.
  */
-async function downloadDeutscheWohnenFixtures(apiUrl, refererUrl) {
-  console.log('\nDownloading deutscheWohnen...');
+async function downloadVonoviaPlatformFixtures(name, apiUrl, refererUrl) {
+  console.log(`\nDownloading ${name}...`);
 
   const headers = {
     'User-Agent':
@@ -42,7 +55,7 @@ async function downloadDeutscheWohnenFixtures(apiUrl, refererUrl) {
 
     const listResponse = await fetch(pageUrl, { headers });
     if (!listResponse.ok) {
-      console.warn(`  Failed to download deutscheWohnen list: ${listResponse.statusText}`);
+      console.warn(`  Failed to download ${name} list: ${listResponse.statusText}`);
       if (page === 0) return;
       break;
     }
@@ -55,8 +68,8 @@ async function downloadDeutscheWohnenFixtures(apiUrl, refererUrl) {
     if ((body.results ?? []).length === 0 || total == null || listData.results.length >= total) break;
   }
 
-  await writeFile(path.join(FIXTURES_DIR, 'deutscheWohnen_list.json'), JSON.stringify(listData, null, 2), 'utf-8');
-  console.log(`  Saved deutscheWohnen_list.json (${listData.results.length} listings)`);
+  await writeFile(path.join(FIXTURES_DIR, `${name}_list.json`), JSON.stringify(listData, null, 2), 'utf-8');
+  console.log(`  Saved ${name}_list.json (${listData.results.length} listings)`);
 
   const firstListing = listData.results?.[0];
   if (!firstListing?.slug) {
@@ -64,8 +77,8 @@ async function downloadDeutscheWohnenFixtures(apiUrl, refererUrl) {
     return;
   }
 
-  const detailUrl = `https://www.deutsche-wohnen.com/mieten/mietangebote/${firstListing.slug}`;
-  console.log(`  Downloading deutscheWohnen detail (${firstListing.slug})...`);
+  const detailUrl = VONOVIA_PLATFORM_DETAIL_URL[name](firstListing.slug);
+  console.log(`  Downloading ${name} detail (${firstListing.slug})...`);
   const detailResponse = await fetch(detailUrl, {
     headers: {
       'User-Agent':
@@ -74,13 +87,13 @@ async function downloadDeutscheWohnenFixtures(apiUrl, refererUrl) {
   });
 
   if (!detailResponse.ok) {
-    console.warn(`  Failed to download deutscheWohnen detail: ${detailResponse.statusText}`);
+    console.warn(`  Failed to download ${name} detail: ${detailResponse.statusText}`);
     return;
   }
 
   const detailHtml = await detailResponse.text();
-  await writeFile(path.join(FIXTURES_DIR, 'deutscheWohnen_detail.html'), detailHtml, 'utf-8');
-  console.log('  Saved deutscheWohnen_detail.html');
+  await writeFile(path.join(FIXTURES_DIR, `${name}_detail.html`), detailHtml, 'utf-8');
+  console.log(`  Saved ${name}_detail.html`);
 }
 
 /** A desktop browser, which is what both portals below answer fastest. */
@@ -725,7 +738,8 @@ async function main() {
         await downloadImmoscoutFixtures(runConfig.url);
         break;
       case 'deutscheWohnen':
-        await downloadDeutscheWohnenFixtures(runConfig.url, cfg.url);
+      case 'vonovia':
+        await downloadVonoviaPlatformFixtures(name, runConfig.url, cfg.url);
         break;
       case 'immowelt':
         await downloadImmoweltFixtures(runConfig, launchBrowser, closeBrowser);
