@@ -27,7 +27,14 @@ const testProviderConfig = JSON.parse(
  * @type {Record<string, number>}
  */
 const EXPECTED_DETAIL_PRICE = {
+  aachenerSwg: 885,
+  adlerGroup: 2283,
   deutscheWohnen: 692,
+  gagKoeln: 810,
+  grandCityProperty: 1192,
+  legWohnen: 623,
+  vivawest: 533,
+  wunderflats: 2490,
   engelVoelkers: 24900000,
   imaxx: 526000,
   immobilienDe: 395,
@@ -73,6 +80,17 @@ const CUSTOM_LIST_PRICES = {
       .map((item) => providerModule('vonovia').config.normalize({ id: item.wrk_id, price: item.preis })?.price)
       .filter((price) => price != null);
   },
+  legWohnen: () => normalizedPrices('legWohnen', (html, provider) => provider.parseListings(html)),
+  grandCityProperty: () => normalizedPrices('grandCityProperty', (html, provider) => provider.parseListings(html)),
+  adlerGroup: () => normalizedPrices('adlerGroup', (html, provider) => provider.parseListings(html)),
+  aachenerSwg: () => normalizedPrices('aachenerSwg', (html, provider) => provider.parseListPage(html).rows),
+  vivawest: () => normalizedPrices('vivawest', (html, provider) => provider.parseResultPage(html).listings),
+  wunderflats: () => {
+    const html = fs.readFileSync(path.join(FIXTURES, 'wunderflats.html'), 'utf8');
+    const data = JSON.parse(cheerio.load(html)('script#data-hydrant').text());
+    // The embedded search result carries the rent in cents.
+    return data.pageData.listingResults.items.map((item) => item.price / 100);
+  },
   immowelt: () => {
     const classifieds = JSON.parse(fs.readFileSync(path.join(FIXTURES, 'immowelt_classifieds.json'), 'utf8'));
     return classifieds.map((entry) => providerModule('immowelt').config.normalize(entry)?.price).filter(Boolean);
@@ -83,6 +101,21 @@ const CUSTOM_LIST_PRICES = {
     return listings.map((entry) => provider.config.normalize(entry)?.price).filter((price) => price != null);
   },
 };
+
+/**
+ * The normalized prices of a provider whose search page is read by a parser of its own.
+ *
+ * @param {string} id
+ * @param {(html: string, provider: any) => any[]} parseRows Reads the raw rows off the list fixture.
+ * @returns {number[]}
+ */
+function normalizedPrices(id, parseRows) {
+  const provider = providerModule(id);
+  const html = fs.readFileSync(path.join(FIXTURES, `${id}.html`), 'utf8');
+  return (parseRows(html, provider) ?? [])
+    .map((row) => provider.config.normalize(row)?.price)
+    .filter((price) => price != null);
+}
 
 /** @type {Map<string, any>} */
 let providersById;

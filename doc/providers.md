@@ -7,18 +7,21 @@ platform into Fredy.
 > Always make sure the search results are sorted by **date**, so Fredy picks up the newest listings
 > first.
 
-## The 25 built-in providers
+## The 34 built-in providers
 
 **🇩🇪 Germany**
 
 | | | |
 |---|---|---|
-| 1a Immobilien | Immo Südwest Presse | Neubau Kompass |
-| Deutsche Wohnen | Immobilien.de | OhneMakler |
-| Engel & Völkers | Immoscout | Regionalimmobilien24 |
-| IMAXX | Immowelt | Schwarzes Brett Bremen |
-| InBerlinWohnen | Kleinanzeigen | Sparkasse Immobilien |
-| McMakler | Vonovia | Wg gesucht |
+| 1a Immobilien | Immobilien.de | OhneMakler |
+| Aachener SWG | immosuchmaschine.de | Regionalimmobilien24 |
+| Adler Group | Immoscout | Schwarzes Brett Bremen |
+| Deutsche Wohnen | Immowelt | Sparkasse Immobilien |
+| Engel & Völkers | InBerlinWohnen | VEBOWAG Bonn |
+| GAG Köln | Kleinanzeigen | Vivawest |
+| Grand City Property | LEG Wohnen | Vonovia |
+| IMAXX | McMakler | Wg gesucht |
+| Immo Südwest Presse | Neubau Kompass | Wunderflats |
 
 **🇦🇹 Austria** · willhaben
 **🇨🇭 Switzerland** · Flatfox
@@ -50,6 +53,22 @@ Worth knowing:
   **wider** than you set it, so if results look too broad, check the log first.
 - If a search URL cannot be mapped at all, the job fails with `Real estate type not found: <path>`.
   Please open an issue with the URL, it is a one line fix.
+
+## Housing companies and smaller portals
+
+These are read with plain requests, no browser. What to paste, and what each one cannot do:
+
+| Provider | Search URL to paste | Worth knowing |
+|---|---|---|
+| LEG Wohnen | `https://www.leg-wohnen.de/mietwohnungen/koeln` | One page per city holds every flat there; no price filter in the URL. |
+| GAG Köln | `https://www.gag-koeln.de/immobiliensuche/wohnung-mieten` | Only the first result page is read: paging and filters use URLs robots.txt disallows. WBS flats are part of the same search. |
+| Vivawest | `https://www.vivawest.de/mieten/results/filter/query~Essen` | Run the search on vivawest.de and paste the `/mieten/results/filter/...` URL. Only a maximum rent (`kaltmiete.to~`). |
+| Grand City Property | `https://www.grandcityproperty.de/wohnungssuche?city=Köln&cityText=Städte\|Köln\|Köln&type=M` | The URL must carry `cityText` (the site's search form adds it), otherwise every city is returned. Maximum price only; at most 50 results. |
+| Adler Group | `https://www.adler-group.com/suche/wohnung` | The site's filters cannot be put in a URL, so the whole offer is read. Narrow it with Fredy's area and spec filters. The price is the warm rent. |
+| Aachener SWG | `https://www.aachener-swg.de/mieten/liste-mietobjekte?city=Köln` | The site filters by POST form; Fredy sends the query parameters of the pasted URL as that form (`city`, `price-min`, `price-max`, `area-min`, `area-max`, `rooms-min`, `rooms-max`, `wbs`). Parking spaces are dropped. |
+| VEBOWAG Bonn | `https://www.vebowag.de/wohnungen/wohnungssuche/` | Read from the Immomio widget the site embeds; always all current offers. If VEBOWAG changes its widget token, update `VEBOWAG_TOKEN` in `lib/provider/vebowag.js`. |
+| immosuchmaschine.de | `https://www.immosuchmaschine.de/g/50667-koeln/wohnung-mieten` | Meta search, mostly Immoscout adverts; links lead to the source portal. |
+| Wunderflats | `https://wunderflats.com/de/moeblierte-wohnungen-auf-zeit/koeln` | Furnished short-term rentals. First result page only. Do not add move-in date or guest filters, robots.txt disallows those URLs. |
 
 ## idealista
 

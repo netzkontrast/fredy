@@ -45,6 +45,11 @@ describe('detectDealTypeFromUrl', () => {
     schwarzesbrett: 'rent', // .../mietobjekte
     deutscheWohnen: 'rent', // rentType=miete&...
     vonovia: 'rent', // rentType=miete&...
+    legWohnen: 'rent', // /mietwohnungen/koeln
+    gagKoeln: 'rent', // .../wohnung-mieten
+    vivawest: 'rent', // /mieten/results/...
+    aachenerSwg: 'rent', // /mieten/liste-mietobjekte
+    immosuchmaschine: 'rent', // .../wohnung-mieten
   };
 
   for (const [provider, expected] of Object.entries(fixtures)) {
