@@ -12,6 +12,10 @@
     "url": "https://www.imaxx.de/immobilien/?post_type=immomakler_object&radius=1&center&vermarktungsart%5B0%5D=kauf&typ%5B0%5D=wohnung",
     "enabled": true
   },
+  "gagKoeln": {
+    "url": "https://www.gag-koeln.de/immobiliensuche/wohnung-mieten",
+    "enabled": true
+  },
   "immobilienDe": {
     "url": "https://www.immobilien.de/suche?kategorie=wohnen&typ=mieten&objektart=wohnung&ort=D%C3%BCsseldorf&umkreis=15&flaeche_von=50&preis_bis=1200",
     "enabled": true
@@ -38,6 +42,10 @@
   },
   "mcMakler": {
     "url": "https://www.mcmakler.de/immobilien?city=D%C3%BCsseldorf&placeId=62539",
+    "enabled": true
+  },
+  "immosuchmaschine": {
+    "url": "https://www.immosuchmaschine.de/g/50667-koeln/wohnung-mieten",
     "enabled": true
   },
   "ohneMakler": {
@@ -69,8 +77,32 @@
     "url": "https://www.deutsche-wohnen.com/mieten/mietangebote?rentType=miete&city=Berlin&immoType=wohnung",
     "enabled": true
   },
+  "grandCityProperty": {
+    "url": "https://www.grandcityproperty.de/wohnungssuche?city=K%C3%B6ln&cityText=St%C3%A4dte%7CK%C3%B6ln%7CK%C3%B6ln&type=M",
+    "enabled": true
+  },
+  "adlerGroup": {
+    "url": "https://www.adler-group.com/suche/wohnung",
+    "enabled": true
+  },
   "vonovia": {
     "url": "https://www.vonovia.de/zuhause-finden/immobilien?rentType=miete&city=K%C3%B6ln&perimeter=5&immoType=wohnung",
+    "enabled": true
+  },
+  "aachenerSwg": {
+    "url": "https://www.aachener-swg.de/mieten/liste-mietobjekte?city=K%C3%B6ln",
+    "enabled": true
+  },
+  "vebowag": {
+    "url": "https://www.vebowag.de/wohnungen/wohnungssuche/",
+    "enabled": true
+  },
+  "vivawest": {
+    "url": "https://www.vivawest.de/mieten/results/filter/query~Essen?cHash=75becf2728cedcb9965030a65ed747df",
+    "enabled": true
+  },
+  "wunderflats": {
+    "url": "https://wunderflats.com/de/moeblierte-wohnungen-auf-zeit/koeln",
     "enabled": true
   },
   "willhaben": {
@@ -101,6 +133,10 @@
   },
   "subito": {
     "url": "https://www.subito.it/annunci-lazio/affitto/appartamenti/roma/",
+    "enabled": true
+  },
+  "legWohnen": {
+    "url": "https://www.leg-wohnen.de/mietwohnungen/koeln",
     "enabled": true
   }
 }

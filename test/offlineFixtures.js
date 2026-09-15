@@ -160,6 +160,13 @@ const FETCHED_PAGE_HOSTS = [
   'www.idealista.pt',
   'tecnocasa.it',
   'tecnorete.it',
+  'www.leg-wohnen.de',
+  'wunderflats.com',
+  'www.gag-koeln.de',
+  'www.grandcityproperty.de',
+  'www.adler-group.com',
+  'www.vivawest.de',
+  'www.aachener-swg.de',
 ];
 
 /** The app's api, on any of its three national hosts. `<cc>` follows the version in every path. */
@@ -352,6 +359,14 @@ export function buildFetchMock() {
         vonoviaListData = raw ? JSON.parse(raw) : { results: [] };
       }
       return vonoviaPlatformPage(vonoviaListData, urlStr);
+    }
+
+    // VEBOWAG's offers come from Immomio's homepage GraphQL endpoint. The recorded page holds every
+    // offer (totalPages 1), so it answers every request and the walk ends after it.
+    if (urlStr.includes('gql-hp.immomio.com/homepage/graphql')) {
+      const raw = await tryReadFile(path.join(FIXTURES_DIR, 'vebowag_list.json'));
+      const data = raw ? JSON.parse(raw) : { data: { propertyList: { page: { totalPages: 1 }, nodes: [] } } };
+      return { ok: true, status: 200, json: () => Promise.resolve(data) };
     }
 
     throw new Error(`Network request blocked in offline mode: ${urlStr}`);

@@ -31,6 +31,23 @@ const RECORDED_SEARCHES = [
     'https://www.vonovia.de/zuhause-finden/immobilien?rentType=miete&city=K%C3%B6ln&perimeter=5&immoType=wohnung&priceMin=500&priceMax=800',
     { min: 500, max: 800 },
   ],
+  // Both landlords only offer an upper bound in their search forms.
+  [
+    'grandCityProperty',
+    'https://www.grandcityproperty.de/wohnungssuche?city=K%C3%B6ln&cityText=St%C3%A4dte%7CK%C3%B6ln%7CK%C3%B6ln&type=M&price=700',
+    { min: null, max: 700 },
+  ],
+  ['vivawest', 'https://www.vivawest.de/mieten/results/filter/kaltmiete.to~800,query~Essen', { min: null, max: 800 }],
+  [
+    'immosuchmaschine',
+    'https://www.immosuchmaschine.de/g/50667-koeln/wohnung-mieten?price_from=500&price_to=1000',
+    { min: 500, max: 1000 },
+  ],
+  [
+    'wunderflats',
+    'https://wunderflats.com/de/moeblierte-wohnungen-auf-zeit/koeln?minPrice=1000&maxPrice=1500',
+    { min: 1000, max: 1500 },
+  ],
   [
     'engelVoelkers',
     'https://www.engelvoelkers.com/de/de/propertysearch?businessArea[]=residential&currency=EUR&page=1&placeName=Berlin%2C%20Deutschland&price.max=1000&price.min=500&propertyMarketingType[]=sale',
@@ -140,6 +157,12 @@ const NO_RANGE_IN_URL = [
     'https://www.imaxx.de/immobilien/?post_type=immomakler_object&radius=1&vermarktungsart%5B0%5D=kauf&typ%5B0%5D=wohnung',
   ],
   ['inberlinwohnen', 'https://inberlinwohnen.de/wohnungsfinder/'],
+  ['legWohnen', 'https://www.leg-wohnen.de/mietwohnungen/koeln'],
+  ['gagKoeln', 'https://www.gag-koeln.de/immobiliensuche/wohnung-mieten'],
+  ['adlerGroup', 'https://www.adler-group.com/suche/wohnung'],
+  // The filters travel in a POST form; the price fields a user may add to the URL are not the site's.
+  ['aachenerSwg', 'https://www.aachener-swg.de/mieten/liste-mietobjekte?city=K%C3%B6ln'],
+  ['vebowag', 'https://www.vebowag.de/wohnungen/wohnungssuche/'],
   ['regionalimmobilien24', 'https://www.regionalimmobilien24.de/rostock/rostock/kaufen/haus/-/-/-/?rd=5'],
   ['wgGesucht', 'https://www.wg-gesucht.de/wg-zimmer-in-Duesseldorf.30.0.1.0.html'],
   ['willhaben', 'https://www.willhaben.at/iad/immobilien/mietwohnungen/wien'],
